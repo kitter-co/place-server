@@ -39,7 +39,7 @@ module Place
 
         send_cooldown
       rescue
-        error "auth error: token unable to be verified"
+        error "Auth error: token unable to be verified"
       end
     end
 
@@ -47,7 +47,7 @@ module Place
       return unless email = @email
 
       if !Place::Cooldowns.elapsed(email)
-        error "place error: cooldown has not elapsed"
+        error "Place error: cooldown has not elapsed"
         return
       end
 
