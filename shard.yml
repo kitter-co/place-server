@@ -1,0 +1,20 @@
+name: place
+version: 0.1.0
+license: MIT
+
+targets:
+  place:
+    main: src/main.cr
+
+dependencies:
+  kemal:
+    github:  kemalcr/kemal
+    version: ~> 1.6
+
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+    version: ~> 0.21
+
+  jwt:
+    github: crystal-community/jwt
+    version: ~> 1.6
