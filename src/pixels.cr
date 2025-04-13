@@ -41,7 +41,7 @@ module Place
       Place::Handler.broadcast(pixel.as_message)
     end
 
-    def self.full : Array(Array(Int32?))
+    def self.all : Array(Array(Int32?))
       pixels = Array.new(25) { Array(Int32?).new(25, nil) }
       rows = db.query_all "SELECT * FROM pixels", as: {Int32, Int32, Int32}
 

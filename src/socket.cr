@@ -68,7 +68,7 @@ module Place
     end
 
     def send_pixels
-      pixels = Place::Pixels.full
+      pixels = Place::Pixels.all
 
       msg = Place::Message.new(
         Place::Message::Type::Pixels, pixels.to_json
