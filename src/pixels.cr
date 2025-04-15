@@ -22,7 +22,12 @@ module Place
     def self.init_table
       return if Place::Utils.table_exists?("pixels")
 
-      db.exec "CREATE TABLE pixels (x INTEGER, y INTEGER, color INTEGER, PRIMARY KEY (x, y))"
+      db.exec "CREATE TABLE pixels (
+        x INTEGER NOT NULL,
+        y INTEGER NOT NULL,
+        color INTEGER NOT NULL,
+        PRIMARY KEY (x, y)
+      )"
 
       db.transaction do |tx|
         cn = tx.connection
