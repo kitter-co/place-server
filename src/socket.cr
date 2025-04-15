@@ -86,7 +86,7 @@ module Place
         Place::Message::Type::Cooldown, cooldown.to_json
       )
 
-      send msg
+      Place::Handler.broadcast_email(email, msg)
     end
   end
 end

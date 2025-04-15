@@ -38,7 +38,7 @@ module Place
     def self.update(pixel : Update)
       db.exec "UPDATE pixels SET color = ? WHERE x = ? AND y = ?", pixel.color, pixel.x, pixel.y
 
-      Place::Handler.broadcast(pixel.as_message)
+      Place::Handler.broadcast_all(pixel.as_message)
     end
 
     def self.all : Array(Array(Int32?))

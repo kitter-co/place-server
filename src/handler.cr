@@ -26,9 +26,15 @@ module Place
       @@sockets.delete(socket)
     end
 
-    def self.broadcast(msg : Place::Message)
+    def self.broadcast_all(msg : Place::Message)
       @@sockets.each do |socket|
         socket.send msg
+      end
+    end
+
+    def self.broadcast_email(email : String, msg : Place::Message)
+      @@sockets.each do |socket|
+        socket.send msg if socket.email == email
       end
     end
   end
