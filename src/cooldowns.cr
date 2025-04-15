@@ -7,7 +7,7 @@ module Place
     def self.init_table
       return if Place::Utils.table_exists?("cooldowns")
 
-      db.exec "CREATE TABLE cooldowns (email STRING PRIMARY KEY, last_time INTEGER)"
+      db.exec "CREATE TABLE cooldowns (email TEXT PRIMARY KEY, last_time INTEGER)"
     end
 
     def self.get(email : String) : Int32
