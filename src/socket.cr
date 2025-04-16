@@ -51,7 +51,7 @@ module Place
         return
       end
 
-      Place::Pixels.update(pixel)
+      Place::Pixels.update(pixel.with_user(email))
       Place::Cooldowns.reset(email)
 
       send_cooldown
