@@ -25,6 +25,8 @@ module Place
     end
 
     def self.elapsed(email : String) : Bool
+      return true if Place::Socket::ADMINS.includes?(email)
+
       last_time = get(email)
       cur_time  = Time.local.to_unix
 

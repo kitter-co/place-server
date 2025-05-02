@@ -2,6 +2,12 @@ module Place
   module Utils
     PROJECT_ID = "nueva-place"
 
+    def self.relative_path(path : String) : String
+      File.join(
+        File.dirname(Process.executable_path.not_nil!), path
+      )
+    end
+
     def self.table_exists?(table : String) : Bool
       res = Place::Handler.db.query_one? "SELECT name FROM sqlite_master WHERE type='table' AND name=?", table, as: String
       !!res
@@ -16,7 +22,7 @@ module Place
       url  = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
       keys = JSON.parse(HTTP::Client.get(url).body)
 
-      pem  = keys[kid].as_s
+      pem = keys[kid].as_s
 
       cert = OpenSSL::X509::Certificate.new(pem)
       pub_key = cert.public_key.as(OpenSSL::PKey::RSA).to_pem

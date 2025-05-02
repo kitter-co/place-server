@@ -1,10 +1,7 @@
 module Place
   class Handler
     @@db : DB::Database = DB.open(
-      "sqlite3://#{File.join(
-        File.dirname(Process.executable_path.not_nil!),
-        "data.db"
-      )}"
+      "sqlite3://#{Place::Utils.relative_path("data.db")}"
     )
 
     @@sockets = [] of Place::Socket

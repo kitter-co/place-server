@@ -5,6 +5,8 @@ module Place
     property token : String?
     property email : String?
 
+    ADMINS = File.read(Place::Utils.relative_path("admins"))
+
     def initialize(@ws)
       send_pixels
 
@@ -34,12 +36,23 @@ module Place
       begin
         claims = Place::Utils.verify_token(token)
 
+        email = claims["email"].as_s
+
+        if ADMINS.includes?(email)
+          error "Auth Success: You are an admin"
+        end
+
+        if !email.ends_with?("@nuevaschool.org")
+          error "Auth Error: Only @nuevaschool.org emails are allowed"
+          return
+        end
+
         @token = token
-        @email = claims["email"].as_s
+        @email = email
 
         send_cooldown
       rescue
-        error "Auth error: token unable to be verified"
+        error "Auth Error: Token unable to be verified"
       end
     end
 
@@ -47,12 +60,12 @@ module Place
       return unless email = @email
 
       if !Place::Cooldowns.elapsed(email)
-        error "Place error: cooldown has not elapsed"
+        error "Place Error: Cooldown has not elapsed"
         return
       end
 
-      Place::Pixels.update(pixel.with_user(email))
       Place::Cooldowns.reset(email)
+      Place::Pixels.update(pixel.with_user(email))
 
       send_cooldown
     end
@@ -79,6 +92,7 @@ module Place
 
     def send_cooldown
       return unless email = @email
+      return if ADMINS.includes?(email)
 
       cooldown = Place::Cooldowns.get(email)
 
