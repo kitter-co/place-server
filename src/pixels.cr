@@ -49,8 +49,8 @@ module Place
       db.transaction do |tx|
         cn = tx.connection
 
-        25.times do |y|
-          25.times do |x|
+        100.times do |y|
+          100.times do |x|
             cn.exec "INSERT INTO pixels VALUES (?, ?, 0xffffff, NULL)", x, y
           end
         end
@@ -64,7 +64,7 @@ module Place
     end
 
     def self.all : Array(Array(Pixel?))
-      pixels = Array.new(25) { Array(Pixel?).new(25, nil) }
+      pixels = Array.new(100) { Array(Pixel?).new(100, nil) }
       rows = db.query_all "SELECT * FROM pixels", as: {Int32, Int32, Int32, String?}
 
       rows.each do |(x, y, color, user)|
