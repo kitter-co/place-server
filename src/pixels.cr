@@ -3,7 +3,10 @@ module Place
     class Update
       include JSON::Serializable
 
-      getter x : Int32, y : Int32, color : Int32, user : String?
+      getter x : Int32
+      getter y : Int32
+      getter color : Int32
+      getter user : String?
 
       def initialize(@x, @y, @color, @user)
       end
