@@ -5,36 +5,36 @@ module Place
     property token : String?
     property email : String?
 
-    ADMINS = File.read(Place::Utils.relative_path("admins"))
+    ADMINS = File.read(Utils.relative_path("admins"))
 
     def initialize(@ws)
       send_pixels
 
       @ws.on_message do |data|
-        msg  = Place::Message.from_json(data)
+        msg  = Message.from_json(data)
         body = msg.body
 
         case msg.type
-        when Place::Message::Type::Token
+        when Message::Type::Token
           token = String.from_json(body)
           read_token(token)
 
-        when Place::Message::Type::Update
-          pixel = Place::Pixels::Update.from_json(body)
+        when Message::Type::Update
+          pixel = Pixels::Update.from_json(body)
           update_pixel(pixel)
         end
       end
 
       @ws.on_close do |_|
-        Place::Handler.remove(self)
+        Handler.remove(self)
       end
 
-      Place::Handler.add(self)
+      Handler.add(self)
     end
 
     def read_token(token : String)
       begin
-        claims = Place::Utils.verify_token(token)
+        claims = Utils.verify_token(token)
 
         email = claims["email"].as_s
 
@@ -56,35 +56,35 @@ module Place
       end
     end
 
-    def update_pixel(pixel : Place::Pixels::Update)
+    def update_pixel(pixel : Pixels::Update)
       return unless email = @email
 
-      if !Place::Cooldowns.elapsed(email)
+      if !Cooldowns.elapsed(email)
         error "Place Error: Cooldown has not elapsed"
         return
       end
 
-      Place::Cooldowns.reset(email)
-      Place::Pixels.update(pixel.with_user(email))
+      Cooldowns.reset(email)
+      Pixels.update(pixel.with_user(email))
 
       send_cooldown
     end
 
-    def send(msg : Place::Message)
+    def send(msg : Message)
       @ws.send msg.to_json
     end
 
     def error(reason : String)
-      send Place::Message.new(
-        Place::Message::Type::Error, reason.to_json
+      send Message.new(
+        Message::Type::Error, reason.to_json
       )
     end
 
     def send_pixels
-      pixels = Place::Pixels.all
+      pixels = Pixels.all
 
-      msg = Place::Message.new(
-        Place::Message::Type::Pixels, pixels.to_json
+      msg = Message.new(
+        Message::Type::Pixels, pixels.to_json
       )
 
       send msg
@@ -94,13 +94,13 @@ module Place
       return unless email = @email
       return if ADMINS.includes?(email)
 
-      cooldown = Place::Cooldowns.get(email)
+      cooldown = Cooldowns.get(email)
 
-      msg = Place::Message.new(
-        Place::Message::Type::Cooldown, cooldown.to_json
+      msg = Message.new(
+        Message::Type::Cooldown, cooldown.to_json
       )
 
-      Place::Handler.broadcast_email(email, msg)
+      Handler.broadcast_email(email, msg)
     end
   end
 end

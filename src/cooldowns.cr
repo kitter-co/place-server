@@ -1,11 +1,11 @@
 module Place
   class Cooldowns
     def self.db : DB::Database
-      Place::Handler.db
+      Handler.db
     end
 
     def self.init_table
-      return if Place::Utils.table_exists?("cooldowns")
+      return if Utils.table_exists?("cooldowns")
 
       db.exec "CREATE TABLE cooldowns (
         email TEXT PRIMARY KEY,
@@ -15,17 +15,14 @@ module Place
 
     def self.get(email : String) : Int32
       res = db.query_one? "SELECT last_time FROM cooldowns WHERE email = ?", email, as: Int32
+      return res if res
 
-      if res
-        res
-      else
-        db.exec "INSERT INTO cooldowns VALUES (?, ?)", email, 0
-        0
-      end
+      db.exec "INSERT INTO cooldowns VALUES (?, ?)", email, 0
+      0
     end
 
     def self.elapsed(email : String) : Bool
-      return true if Place::Socket::ADMINS.includes?(email)
+      return true if Socket::ADMINS.includes?(email)
 
       last_time = get(email)
       cur_time  = Time.local.to_unix

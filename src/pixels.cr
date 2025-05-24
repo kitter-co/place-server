@@ -13,8 +13,8 @@ module Place
       end
 
       def as_message
-        Place::Message.new(
-          Place::Message::Type::Update, to_json
+        Message.new(
+          Message::Type::Update, to_json
         )
       end
     end
@@ -32,11 +32,11 @@ module Place
     end
 
     def self.db : DB::Database
-      Place::Handler.db
+      Handler.db
     end
 
     def self.init_table
-      return if Place::Utils.table_exists?("pixels")
+      return if Utils.table_exists?("pixels")
 
       db.exec "CREATE TABLE pixels (
         x INTEGER NOT NULL,
@@ -60,7 +60,7 @@ module Place
     def self.update(pixel : Update)
       db.exec "UPDATE pixels SET color = ?, user = ? WHERE x = ? AND y = ?", pixel.color, pixel.user, pixel.x, pixel.y
 
-      Place::Handler.broadcast_all(pixel.as_message)
+      Handler.broadcast_all(pixel.as_message)
     end
 
     def self.all : Array(Array(Pixel?))
