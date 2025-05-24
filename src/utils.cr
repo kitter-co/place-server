@@ -9,7 +9,7 @@ module Place
     end
 
     def self.table_exists?(table : String) : Bool
-      res = Handler.db.query_one? "SELECT name FROM sqlite_master WHERE type='table' AND name=?", table, as: String
+      res = Handler.db.query_one? "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", table, as: Int32
       !!res
     end
 
