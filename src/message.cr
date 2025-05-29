@@ -10,8 +10,8 @@ module Place
       Error
     end
 
-    property type : Type
-    property body : String
+    getter type : Type
+    getter body : String
 
     def initialize(@type, @body)
     end

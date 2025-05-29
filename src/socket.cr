@@ -1,9 +1,9 @@
 module Place
   class Socket
-    property ws : HTTP::WebSocket
+    @ws : HTTP::WebSocket
 
-    property token : String?
-    property email : String?
+    @token : String?
+    getter email : String?
 
     ADMINS = File.read(Utils.relative_path("admins"))
 

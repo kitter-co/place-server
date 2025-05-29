@@ -25,10 +25,10 @@ module Place
     class Pixel
       include JSON::Serializable
 
-      property color : Int32
+      getter color : Int32
 
       @[JSON::Field(emit_null: true)]
-      property user : String?
+      getter user : String?
 
       def initialize(@color, @user)
       end
